@@ -22,28 +22,7 @@ public class GetDataService {
         headers.set("Cookie", "humans_21909=1");
     }
     @Async
-    public CompletableFuture<String> getAllData(){
-        String url = "http://dummy.restapiexample.com/api/v1/employees";
-
-        try {
-
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            String responseBody = response.getBody();
-            if (responseBody != null && responseBody.trim().startsWith("{")) {
-                return CompletableFuture.completedFuture(responseBody);
-            } else {
-                return CompletableFuture.completedFuture("Error: Empty response");
-            }
-
-        } catch (Exception e) {
-            return CompletableFuture.completedFuture("Error fetching data: " + e.getMessage());
-        }
-    }
-    @Async
-    public CompletableFuture<String> getUserById(int id){
-        String url = "http://dummy.restapiexample.com/api/v1/employee/" + id;
+    public CompletableFuture<String> getAllData(String url){
 
         try {
 

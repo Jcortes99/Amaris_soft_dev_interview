@@ -21,12 +21,13 @@ public class UsersController {
 
     @GetMapping("/get-all-data")
     public CompletableFuture<ResponseEntity<String>> getData(){
-        return getDataService.getAllData().thenApply(ResponseEntity::ok);
+        String url = "http://dummy.restapiexample.com/api/v1/employees";
+        return getDataService.getAllData(url).thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/get-user/{id}")
     public CompletableFuture<String> getData1(@PathVariable int id){
-//        String url = "http://dummy.restapiexample.com/api/v1/employee/" + id;
-        return getDataService.getUserById(id);
+        String url = "http://dummy.restapiexample.com/api/v1/employee/" + id;
+        return getDataService.getAllData(url);
     }
 }
