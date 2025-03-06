@@ -11,11 +11,5 @@ public class AppConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-//    public WebClient webClient() {
-//        return WebClient.builder()
-//                .defaultHeader("User-Agent", "Mozilla/5.0")
-//                .defaultHeader("Accept", "application/json")
-//                .build();
-//    }
 }
 
