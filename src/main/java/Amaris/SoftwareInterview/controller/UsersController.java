@@ -1,6 +1,8 @@
 package Amaris.SoftwareInterview.controller;
 
+import Amaris.SoftwareInterview.model.User;
 import Amaris.SoftwareInterview.service.GetDataService;
+import Amaris.SoftwareInterview.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -9,21 +11,18 @@ import java.util.concurrent.CompletableFuture;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import java.util.concurrent.CompletionException;
 
 @RestController
 @RequestMapping("/Users")
 public class UsersController {
 
     private final GetDataService getDataService;
-    public UsersController(GetDataService getDataService) {
+    private final UserService userService;
+    public UsersController(GetDataService getDataService, UserService userService) {
         this.getDataService = getDataService;
+        this.userService = userService;
     }
-
-//    @GetMapping("/get-all-data")
-//    public CompletableFuture<String> getData(){
-//        String url = "http://dummy.restapiexample.com/api/v1/employees";
-//        return getDataService.fetchData(url);
-//    }
 
     @GetMapping("/get-user/{id}")
     public CompletableFuture<String> getUserById(@PathVariable int id){
@@ -69,6 +68,35 @@ public class UsersController {
                         return employeeNames.toString();
                     } catch (Exception e) {
                         return "Invalid response: " + response;
+                    }
+                });
+    }
+    @GetMapping("/get-anual-salary/{id}")
+    public CompletableFuture<String> getAnualSalary(@PathVariable int id) {
+        String url = "http://dummy.restapiexample.com/api/v1/employee/" + id;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return getDataService.fetchData(url)
+                .thenApply(response -> {
+                    try {
+                        JsonNode jsonNode = objectMapper.readTree(response);
+                        JsonNode dataNode = jsonNode.get("data");
+
+                        if (dataNode == null || dataNode.isNull()) {
+                            throw new CompletionException(new RuntimeException("User not found"));
+                        }
+
+                        User user = new User(
+                                dataNode.get("id").asInt(),
+                                dataNode.get("employee_name").asText(),
+                                dataNode.get("employee_salary").asLong(),
+                                dataNode.get("employee_age").asInt()
+                        );
+
+                        return userService.calculate_anual_salary(user);
+
+                    } catch (Exception e) {
+                        throw new CompletionException(new RuntimeException("Error parsing response", e));
                     }
                 });
     }
