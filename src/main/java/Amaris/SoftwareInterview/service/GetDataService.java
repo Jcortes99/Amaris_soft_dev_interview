@@ -22,7 +22,7 @@ public class GetDataService {
         headers.set("Cookie", "humans_21909=1");
     }
     @Async
-    public CompletableFuture<String> getAllData(String url){
+    public CompletableFuture<String> fetchData(String url){
 
         try {
 
