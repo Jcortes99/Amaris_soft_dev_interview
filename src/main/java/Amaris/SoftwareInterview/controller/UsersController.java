@@ -3,6 +3,7 @@ package Amaris.SoftwareInterview.controller;
 import Amaris.SoftwareInterview.model.User;
 import Amaris.SoftwareInterview.service.GetDataService;
 import Amaris.SoftwareInterview.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.CompletionException;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/Users")
 public class UsersController {
 
@@ -60,19 +62,14 @@ public class UsersController {
                 .thenApply(response -> {
                     try {
                         JsonNode jsonNode = objectMapper.readTree(response);
-                        List<String> employeeNames = new ArrayList<>();
-                        JsonNode list = jsonNode.get("data");
-                        for (JsonNode node : list) {
-                            employeeNames.add(node.get("employee_name").asText());
-                        }
-                        return employeeNames.toString();
+                        return jsonNode.get("data").toString();
                     } catch (Exception e) {
                         return "Invalid response: " + response;
                     }
                 });
     }
     @GetMapping("/get-anual-salary/{id}")
-    public CompletableFuture<String> getAnualSalary(@PathVariable int id) {
+    public CompletableFuture<User> getAnualSalary(@PathVariable int id) {
         String url = "http://dummy.restapiexample.com/api/v1/employee/" + id;
         ObjectMapper objectMapper = new ObjectMapper();
 
