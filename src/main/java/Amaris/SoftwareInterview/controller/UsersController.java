@@ -54,7 +54,7 @@ public class UsersController {
                     }
                 });
     }
-    @GetMapping("/get-all-names")
+    @GetMapping("/get-all-users")
     public CompletableFuture<String> getAllNames(){
         String url = "http://dummy.restapiexample.com/api/v1/employees";
         ObjectMapper objectMapper = new ObjectMapper();
@@ -62,7 +62,23 @@ public class UsersController {
                 .thenApply(response -> {
                     try {
                         JsonNode jsonNode = objectMapper.readTree(response);
-                        return jsonNode.get("data").toString();
+                        JsonNode dataNode = jsonNode.get("data");
+
+                        if (dataNode == null || !dataNode.isArray()){
+                            return "Invalid response: " + response;
+                        }
+                        List<User> users = new ArrayList<>();
+                        for (JsonNode node: dataNode){
+                            User user = new User(
+                                    node.get("id").asInt(),
+                                    node.get("employee_name").asText(),
+                                    node.get("employee_salary").asLong(),
+                                    node.get("employee_age").asInt()
+                            );
+                            user.setEmployee_anual_salary(user.getEmployee_salary());
+                            users.add(user);
+                        }
+                        return objectMapper.writeValueAsString(users);
                     } catch (Exception e) {
                         return "Invalid response: " + response;
                     }
