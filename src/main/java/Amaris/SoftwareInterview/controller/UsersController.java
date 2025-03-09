@@ -75,7 +75,7 @@ public class UsersController {
                                     node.get("employee_salary").asLong(),
                                     node.get("employee_age").asInt()
                             );
-                            user.setEmployee_anual_salary(user.getEmployee_salary());
+                            userService.calculate_anual_salary(user);
                             users.add(user);
                         }
                         return objectMapper.writeValueAsString(users);
