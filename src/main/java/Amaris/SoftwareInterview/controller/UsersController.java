@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
 import java.util.concurrent.CompletionException;
 
 @RestController
@@ -92,6 +91,7 @@ public class UsersController {
         return getDataService.fetchData(url)
                 .thenApply(response -> {
                     try {
+
                         JsonNode jsonNode = objectMapper.readTree(response);
                         JsonNode dataNode = jsonNode.get("data");
 
@@ -109,7 +109,7 @@ public class UsersController {
                         return userService.calculate_anual_salary(user);
 
                     } catch (Exception e) {
-                        throw new CompletionException(new RuntimeException("Error parsing response", e));
+                        throw new CompletionException(new RuntimeException("Too many Attempts.", e));
                     }
                 });
     }
